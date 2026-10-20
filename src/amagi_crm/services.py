@@ -101,6 +101,9 @@ class CRM:
     def session(self) -> Session:
         return self.db.session()
 
+    def today(self) -> date:
+        return datetime.now(self.zone).date()
+
     # --- serialization -------------------------------------------------------
 
     def _iso(self, value_utc: datetime | None) -> str | None:

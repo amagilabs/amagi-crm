@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Book a time</title>
+  <link rel="icon" href="/static/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/book.js" defer></script>
+</head>
+<body>
+  <main class="booking">
+    <h1>Book a time</h1>
+    <p class="lede">Pick a day, then an open slot. You'll get a confirmation on this page.</p>
+    <noscript><p>This booking page needs JavaScript.</p></noscript>
+
+    <section id="pick">
+      <div class="tab-head">
+        <button class="btn quiet" type="button" id="day-prev">Previous day</button>
+        <input id="day" type="date" aria-label="Day">
+        <button class="btn quiet" type="button" id="day-next">Next day</button>
+      </div>
+      <h3 id="day-title"></h3>
+      <p class="note" id="slot-note"></p>
+      <div id="slots" class="slots"></div>
+    </section>
+
+    <form id="book-form" hidden>
+      <h3 id="chosen"></h3>
+      <label for="name">Your name</label>
+      <input id="name" name="name" required autocomplete="name">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" required autocomplete="email">
+      <label for="phone">Phone (optional)</label>
+      <input id="phone" name="phone" type="tel" autocomplete="tel">
+      <label for="message">Anything we should know first? (optional)</label>
+      <textarea id="message" name="message"></textarea>
+      <p id="book-error" class="error" role="alert"></p>
+      <div class="dialog-actions">
+        <button class="btn quiet" type="button" id="book-back">Pick another time</button>
+        <button class="btn primary" type="submit">Book this time</button>
+      </div>
+    </form>
+
+    <section id="done" hidden>
+      <h2>You're booked.</h2>
+      <p id="done-detail" class="lede"></p>
+    </section>
+  </main>
+</body>
+</html>

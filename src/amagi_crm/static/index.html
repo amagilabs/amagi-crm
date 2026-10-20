@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>amagi-crm</title>
+  <link rel="icon" href="/static/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <noscript><p class="noscript">amagi-crm's web interface needs JavaScript. The REST API under /api works without it; see /docs.</p></noscript>
+
+  <section id="signin" class="signin" hidden>
+    <div class="signin-inner">
+      <img src="/static/icon.svg" alt="" width="72" height="72">
+      <h1>amagi-crm</h1>
+      <p>Sign in with the API token that <code>amagi-crm init</code> or <code>amagi-crm user add</code> printed for you.</p>
+      <form id="signin-form">
+        <label for="token">API token</label>
+        <input id="token" name="token" type="password" autocomplete="off" required spellcheck="false">
+        <button type="submit" class="btn primary">Sign in</button>
+        <p id="signin-error" class="error" role="alert"></p>
+      </form>
+      <p class="note">The token stays in this browser tab only and is gone when you close it.</p>
+    </div>
+  </section>
+
+  <div id="app" hidden>
+    <header class="bar">
+      <a class="wordmark" href="#contacts"><img src="/static/icon.svg" alt="" width="28" height="28">amagi-crm</a>
+      <nav aria-label="Sections">
+        <a href="#contacts" data-tab="contacts">Contacts</a>
+        <a href="#pipeline" data-tab="pipeline">Pipeline</a>
+        <a href="#tasks" data-tab="tasks">Tasks</a>
+        <a href="#calendar" data-tab="calendar">Calendar</a>
+        <a href="#audit" data-tab="audit" data-admin hidden>Audit log</a>
+      </nav>
+      <span id="whoami" class="whoami"></span>
+      <button id="signout" class="btn quiet" type="button">Sign out</button>
+    </header>
+
+    <main>
+      <section id="tab-contacts" class="tab" hidden>
+        <div class="tab-head">
+          <h2>Contacts</h2>
+          <input id="contact-search" type="search" placeholder="Search name, email, phone, company" aria-label="Search contacts">
+          <button class="btn primary" type="button" data-write id="add-contact">Add contact</button>
+        </div>
+        <p id="contact-count" class="note"></p>
+        <div class="table-wrap">
+          <table class="grid">
+            <thead><tr><th>Name</th><th>Company</th><th>Email</th><th>Phone</th><th>Tags</th></tr></thead>
+            <tbody id="contact-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="tab-pipeline" class="tab" hidden>
+        <div class="tab-head">
+          <h2>Pipeline</h2>
+          <p id="pipeline-total" class="headline-figure"></p>
+          <button class="btn primary" type="button" data-write id="add-deal">Add deal</button>
+        </div>
+        <p class="note">Drag a card to another stage, or open it and pick a stage.</p>
+        <div id="board" class="board"></div>
+      </section>
+
+      <section id="tab-tasks" class="tab" hidden>
+        <div class="tab-head">
+          <h2>Tasks</h2>
+          <div class="segmented" role="group" aria-label="Show">
+            <button type="button" data-filter="open" class="on">Open</button>
+            <button type="button" data-filter="done">Done</button>
+          </div>
+        </div>
+        <form id="task-form" class="inline-form" data-write>
+          <input name="title" placeholder="New task, e.g. Send engagement letter" aria-label="Task title" required>
+          <input name="due_date" type="date" aria-label="Due date">
+          <button class="btn primary" type="submit">Add task</button>
+        </form>
+        <ul id="task-list" class="task-list"></ul>
+      </section>
+
+      <section id="tab-calendar" class="tab" hidden>
+        <div class="tab-head">
+          <h2>Calendar</h2>
+          <button class="btn quiet" type="button" id="day-prev">Previous day</button>
+          <input id="day" type="date" aria-label="Day">
+          <button class="btn quiet" type="button" id="day-next">Next day</button>
+          <button class="btn quiet" type="button" id="day-today">Today</button>
+        </div>
+        <div class="day-grid">
+          <div>
+            <h3 id="day-title"></h3>
+            <ol id="agenda" class="agenda"></ol>
+            <h3>Tasks due by this day</h3>
+            <ul id="agenda-tasks" class="task-list compact"></ul>
+          </div>
+          <div class="slots-panel">
+            <h3>Open slots</h3>
+            <p class="note" id="slot-note"></p>
+            <div id="slots" class="slots"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-audit" class="tab" hidden>
+        <div class="tab-head">
+          <h2>Audit log</h2>
+          <button class="btn quiet" type="button" id="audit-refresh">Verify again</button>
+        </div>
+        <p id="audit-status" class="audit-status"></p>
+        <p class="note">Each entry records who did what to which record, and which fields changed. Field values are never stored here.</p>
+        <div class="table-wrap">
+          <table class="grid">
+            <thead><tr><th>When</th><th>Who</th><th>Action</th><th>Record</th><th>Fields</th></tr></thead>
+            <tbody id="audit-rows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="dialog" aria-labelledby="dialog-title">
+    <form method="dialog" id="dialog-form">
+      <h2 id="dialog-title"></h2>
+      <div id="dialog-body"></div>
+      <p id="dialog-error" class="error" role="alert"></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn danger" id="dialog-delete" hidden>Delete</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn quiet" id="dialog-cancel">Cancel</button>
+        <button type="submit" class="btn primary" id="dialog-save">Save</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>

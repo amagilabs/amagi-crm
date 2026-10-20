@@ -5,6 +5,7 @@ from __future__ import annotations
 from sqlalchemy import create_engine, event, select
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from .config import Settings
 from .crypto import FieldCipher, set_cipher
@@ -15,6 +16,9 @@ def make_engine(url: str) -> Engine:
     kwargs = {}
     if url.startswith("sqlite"):
         kwargs["connect_args"] = {"check_same_thread": False}
+        if url in ("sqlite://", "sqlite:///:memory:"):
+            # one shared connection, or every thread would see its own empty database
+            kwargs["poolclass"] = StaticPool
     engine = create_engine(url, future=True, **kwargs)
     if url.startswith("sqlite"):
         @event.listens_for(engine, "connect")
