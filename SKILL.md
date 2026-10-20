@@ -1,6 +1,6 @@
 ---
 name: amagi-crm
-description: Operate a self-hosted amagi-crm instance from the command line - set it up, import contacts from a CSV export (GoHighLevel-style headers work), add and move deals on the pipeline, add and complete tasks, book appointments without double-booking, read the day's agenda and open slots, print the weekly pipeline summary, verify the tamper-evident audit log, and rotate encryption keys. Use when the user wants to manage contacts, deals, tasks or appointments in amagi-crm, migrate contacts into it, check its audit log, or set it up locally or with Docker Compose.
+description: Operate a self-hosted amagi-crm instance from the command line: set it up, import contacts from a CSV export (GoHighLevel-style headers work), add and move deals on the pipeline, add and complete tasks, book appointments without double-booking, read the day's agenda and open slots, print the weekly pipeline summary, verify the tamper-evident audit log, and rotate encryption keys. Use when the user wants to manage contacts, deals, tasks or appointments in amagi-crm, migrate contacts into it, check its audit log, or set it up locally or with Docker Compose.
 ---
 
 # amagi-crm
