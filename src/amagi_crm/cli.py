@@ -159,12 +159,10 @@ def cmd_import(args) -> int:
     rows, ignored = read_contacts_csv(text)
     if ignored:
         print("Ignored columns: " + ", ".join(ignored))
-    if args.dry_run:
-        print(f"Dry run: {len(rows)} rows would be imported from {path.name}.")
-        return 0
     crm = _open(args)
-    result = crm.import_contacts(rows, ACTOR)
-    print(f"Imported {result['created']} contacts from {path.name}: "
+    result = crm.import_contacts(rows, ACTOR, dry_run=args.dry_run)
+    verb = "Dry run, nothing written. Would import" if args.dry_run else "Imported"
+    print(f"{verb} {result['created']} contacts from {path.name}: "
           f"{result['duplicates']} duplicate emails skipped, {result['invalid']} invalid rows.")
     for err in result["errors"]:
         print(f"  {err}")
@@ -377,7 +375,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     s = sub.add_parser("import", help="import contacts from a CSV export (GoHighLevel-style headers work)")
     s.add_argument("csv")
-    s.add_argument("--dry-run", action="store_true", help="parse only, write nothing")
+    s.add_argument("--dry-run", action="store_true", help="run every check, write nothing")
     s.set_defaults(func=cmd_import)
 
     s = sub.add_parser("export", help="export all contacts to CSV (decrypted)")

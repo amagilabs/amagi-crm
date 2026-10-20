@@ -318,30 +318,37 @@ class CRM:
             s.delete(c)
             audit.record(s, actor, "delete", "contact", contact_id)
 
-    def import_contacts(self, rows: list[tuple[int, dict]], actor: str) -> dict:
+    def import_contacts(self, rows: list[tuple[int, dict]], actor: str, dry_run: bool = False) -> dict:
         """Create contacts from ``(line_number, fields)`` rows (see ``importer.read_contacts_csv``). Duplicate emails (already stored, or
-        repeated in the file) are skipped, not merged."""
+        repeated in the file) are skipped, not merged. ``dry_run`` runs the same checks and writes nothing."""
         result = {"created": 0, "duplicates": 0, "invalid": 0, "errors": []}
+        if dry_run:
+            with self.session() as s:
+                return self._import_rows(s, rows, actor, result, write=False)
         with self.session() as s, audit.write_txn(s):
-            seen: set[str] = set()
-            for lineno, row in rows:
-                c = Contact()
-                try:
-                    changed = self._apply_contact(c, row)
-                except Invalid as exc:
-                    result["invalid"] += 1
-                    result["errors"].append(f"row {lineno}: {exc}")
+            return self._import_rows(s, rows, actor, result, write=True)
+
+    def _import_rows(self, s, rows, actor, result, write):
+        seen: set[str] = set()
+        for lineno, row in rows:
+            c = Contact()
+            try:
+                changed = self._apply_contact(c, row)
+            except Invalid as exc:
+                result["invalid"] += 1
+                result["errors"].append(f"row {lineno}: {exc}")
+                continue
+            if c.email_index:
+                if c.email_index in seen or s.scalar(
+                        select(Contact.id).where(Contact.email_index == c.email_index).limit(1)):
+                    result["duplicates"] += 1
                     continue
-                if c.email_index:
-                    if c.email_index in seen or s.scalar(
-                            select(Contact.id).where(Contact.email_index == c.email_index).limit(1)):
-                        result["duplicates"] += 1
-                        continue
-                    seen.add(c.email_index)
+                seen.add(c.email_index)
+            result["created"] += 1
+            if write:
                 s.add(c)
                 s.flush()
                 audit.record(s, actor, "import", "contact", c.id, changed)
-                result["created"] += 1
         return result
 
     def export_contacts_csv(self, actor: str) -> str:

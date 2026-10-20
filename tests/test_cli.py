@@ -43,7 +43,10 @@ def test_full_session(workdir, fixture_csv, capsys):
     assert "Already set up" in capsys.readouterr().out
 
     assert main(["import", str(fixture_csv), "--dry-run"]) == 0
-    assert "Dry run: 10 rows" in capsys.readouterr().out
+    out = capsys.readouterr().out
+    assert "nothing written. Would import 8 contacts" in out and "row 11: not a valid email" in out
+    assert main(["contacts"]) == 0
+    assert "No contacts." in capsys.readouterr().out
     assert main(["import", str(fixture_csv)]) == 0
     out = capsys.readouterr().out
     assert "Imported 8 contacts" in out and "1 duplicate emails skipped, 1 invalid rows" in out
