@@ -1,0 +1,11 @@
+First Name,Last Name,Email,Phone,Business Name,Tags,Source,Date Added
+Dana,Whitfield,dana.whitfield@example.com,555-0140,Harbor Dental,"vip, referral",Website,2026-01-14
+Lee,Park,lee@example.com,555-0141,Park & Sons Roofing,lead,Facebook Ad,2026-02-03
+Amara,Okafor,amara@example.org,555-0142,Okafor Design,client,Referral,2026-02-19
+Tom,Reyes,tom.reyes@example.com,555-0143,Reyes Landscaping,lead,Website,2026-03-07
+Priya,Shah,priya@example.net,555-0144,Shah Accounting,client;referral,Referral,2026-03-22
+Marco,Bellini,marco@example.com,555-0145,Bellini Cafe,,Walk-in,2026-04-10
+Grace,Holm,grace.holm@example.com,555-0146,Holm Physio,lead,Google,2026-05-01
+Sam,Ortiz,,555-0147,Ortiz Plumbing,lead,Phone,2026-05-12
+Lee,Park,LEE@example.com,555-0141,Park & Sons Roofing,lead,Duplicate entry,2026-06-02
+Nadia,Fontaine,not-an-email,555-0148,Fontaine Bakery,lead,Website,2026-06-20
