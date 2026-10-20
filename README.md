@@ -29,10 +29,11 @@ $ amagi-crm book "2030-11-04 10:15" --title "Second meeting"
 amagi-crm: that time overlaps another booked appointment
 
 $ amagi-crm audit verify
-Audit chain OK: 15 entries, head d8f326924ee9...
+Audit chain OK: 14 entries, head 46b0dbd8e9d9...
 ```
 
-(The audit head hash is shortened here. The tool prints all 64 characters.)
+(The audit head hash is shortened here. The tool prints all 64 characters, and yours will differ
+because the chain is keyed to your own secret.)
 
 ![The pipeline board in the web UI](assets/pipeline.png)
 
@@ -100,6 +101,16 @@ writes nothing:
 $ amagi-crm import contacts.csv --dry-run
 Ignored columns: Source, Date Added
 Dry run, nothing written. Would import 8 contacts from contacts.csv: 1 duplicate emails skipped, 1 invalid rows.
+  row 11: not a valid email address: 'not-an-email'
+```
+
+Drop `--dry-run` to import for real. Rows with a bad email are skipped and listed by line number, and
+an email already in the CRM (or repeated in the file) counts as a duplicate:
+
+```
+$ amagi-crm import contacts.csv
+Ignored columns: Source, Date Added
+Imported 8 contacts from contacts.csv: 1 duplicate emails skipped, 1 invalid rows.
   row 11: not a valid email address: 'not-an-email'
 ```
 
