@@ -323,6 +323,22 @@ def cmd_rotate_keys(args) -> int:
     return 0
 
 
+def cmd_keygen(args) -> int:
+    import secrets
+
+    from .crypto import generate_fernet_key, generate_secret
+
+    if args.key_only:
+        print(generate_fernet_key())
+        return 0
+    print("# amagi-crm secrets. Keep them apart from database backups: whoever has both can read the data.")
+    print(f"AMAGI_CRM_ENCRYPTION_KEYS={generate_fernet_key()}")
+    print(f"AMAGI_CRM_SECRET_KEY={generate_secret()}")
+    if args.postgres:
+        print(f"POSTGRES_PASSWORD={secrets.token_urlsafe(24)}")
+    return 0
+
+
 # --- parser ------------------------------------------------------------------
 
 def build_parser() -> argparse.ArgumentParser:
@@ -428,6 +444,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     s = sub.add_parser("rotate-keys", help="re-encrypt old rows with the first key in AMAGI_CRM_ENCRYPTION_KEYS")
     s.set_defaults(func=cmd_rotate_keys)
+
+    s = sub.add_parser("keygen", help="print fresh secrets for a .env file (nothing is written)")
+    s.add_argument("--postgres", action="store_true", help="also print a POSTGRES_PASSWORD (for Docker Compose)")
+    s.add_argument("--key-only", action="store_true", help="print one new encryption key, for key rotation")
+    s.set_defaults(func=cmd_keygen)
     return p
 
 

@@ -89,3 +89,14 @@ def test_full_session(workdir, fixture_csv, capsys):
     con.close()
     assert main(["audit", "verify"]) == 1
     assert "BROKEN at entry 3" in capsys.readouterr().out
+
+
+def test_keygen_prints_usable_secrets(workdir, capsys):
+    assert main(["keygen", "--postgres"]) == 0
+    lines = dict(l.split("=", 1) for l in capsys.readouterr().out.splitlines() if "=" in l and not l.startswith("#"))
+    assert set(lines) == {"AMAGI_CRM_ENCRYPTION_KEYS", "AMAGI_CRM_SECRET_KEY", "POSTGRES_PASSWORD"}
+    (workdir / ".env").write_text("\n".join(f"{k}={v}" for k, v in lines.items()) + "\n", encoding="utf-8")
+    assert main(["contacts"]) == 0  # the generated keys pass the fail-closed check
+    assert "No contacts." in capsys.readouterr().out
+    assert main(["keygen", "--key-only"]) == 0
+    assert len(capsys.readouterr().out.strip()) == 44
