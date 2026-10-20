@@ -251,4 +251,4 @@ If amagi-crm replaced a CRM bill you were paying every month, a star helps other
 
 ## License
 
-MIT. See [LICENSE](LICENSE). Copyright (c) 2026 AmagiLabs (Amagisolutionsgroup, Inc.).
+MIT. See [LICENSE](LICENSE). Copyright (c) 2026 Amagisolutionsgroup, Inc. (AmagiLabs).
