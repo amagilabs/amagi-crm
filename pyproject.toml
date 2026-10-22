@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,12 +8,12 @@ version = "0.1.0"
 description = "Self-hosted CRM starter for small firms: contacts, deal pipeline, tasks, booking, with field-level encryption and a tamper-evident audit log."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "AmagiLabs (Amagisolutionsgroup, Inc.)", email = "dev@amagisolutionsgroup.com" }]
 keywords = ["crm", "self-hosted", "small-business", "law-firm", "encryption", "audit-log", "fastapi", "cli"]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Framework :: FastAPI",
     "Intended Audience :: Legal Industry",
@@ -33,6 +33,8 @@ dev = ["pytest>=7.0", "httpx>=0.27"]
 
 [project.urls]
 Homepage = "https://github.com/amagilabs/amagi-crm"
+Source = "https://github.com/amagilabs/amagi-crm"
+Issues = "https://github.com/amagilabs/amagi-crm/issues"
 
 [project.scripts]
 amagi-crm = "amagi_crm.cli:main"

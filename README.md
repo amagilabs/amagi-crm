@@ -7,7 +7,7 @@ later. It runs on SQLite with one command, or on PostgreSQL with Docker Compose.
 
 ## Demo
 
-![demo](assets/demo.gif)
+![demo](https://raw.githubusercontent.com/amagilabs/amagi-crm/master/assets/demo.gif)
 
 ```
 $ amagi-crm import contacts.csv
@@ -35,20 +35,14 @@ Audit chain OK: 14 entries, head 46b0dbd8e9d9...
 (The audit head hash is shortened here. The tool prints all 64 characters, and yours will differ
 because the chain is keyed to your own secret.)
 
-![The pipeline board in the web UI](assets/pipeline.png)
+![The pipeline board in the web UI](https://raw.githubusercontent.com/amagilabs/amagi-crm/master/assets/pipeline.png)
 
-![The calendar: the day's appointments, tasks due and open slots](assets/calendar.png)
+![The calendar: the day's appointments, tasks due and open slots](https://raw.githubusercontent.com/amagilabs/amagi-crm/master/assets/calendar.png)
 
 ## Install
 
 ```
 pipx install amagi-crm
-```
-
-It isn't on PyPI yet. Until it is, install from a clone of this repo:
-
-```
-pipx install .
 ```
 
 You need Python 3.10 or newer. To run on your own PostgreSQL server outside Docker, add the driver
@@ -246,7 +240,7 @@ If amagi-crm replaced a CRM bill you were paying every month, a star helps other
 
 - [amagilabs on GitHub](https://github.com/amagilabs): small open-source tools for small
   businesses and law firms from AmagiLabs (Amagisolutionsgroup, Inc.).
-- [legal-review-skills](https://github.com/amagilabs/legal-review-skills): Claude Code skills for a
+- [amagi-legal-review-skills](https://github.com/amagilabs/amagi-legal-review-skills): Claude Code skills for a
   first-pass review of NDAs, MSAs and leases.
 
 ## License
