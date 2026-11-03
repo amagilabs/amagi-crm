@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "amagi-crm"
-version = "0.1.0"
+version = "0.1.1"
 description = "Self-hosted CRM starter for small firms: contacts, deal pipeline, tasks, booking, with field-level encryption and a tamper-evident audit log."
 readme = "README.md"
 requires-python = ">=3.10"
