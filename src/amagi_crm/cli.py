@@ -267,9 +267,12 @@ def cmd_book(args) -> int:
             "contact_id": _contact_by_email(crm, args.contact_email)}
     if args.location:
         data["location"] = args.location
-    a = crm.create_appointment(data, ACTOR)
+    a = crm.create_appointment(data, ACTOR, enforce_hours=args.enforce_hours)
     d = crm.appt_dict(a)
     print(f"Booked #{a.id}: {a.title}, {d['start'][:16].replace('T', ' ')} to {d['end'][11:16]}")
+    if crm.outside_working_hours(a.start_utc, a.end_utc):
+        print(f"amagi-crm: warning: #{a.id} is outside working hours ({crm.settings.working_hours}). "
+              "Booked anyway; pass --enforce-hours to refuse such bookings.", file=sys.stderr)
     return 0
 
 
@@ -421,12 +424,14 @@ def build_parser() -> argparse.ArgumentParser:
     a.add_argument("id", type=int)
     s.set_defaults(func=cmd_tasks, tasks_cmd="list")
 
-    s = sub.add_parser("book", help="book an appointment (refuses overlaps)")
+    s = sub.add_parser("book", help="book an appointment (refuses overlaps, warns outside working hours)")
     s.add_argument("start", help='firm-local time, e.g. "2026-11-02 10:00"')
     s.add_argument("--title", required=True)
     s.add_argument("--minutes", type=int, default=30)
     s.add_argument("--contact-email")
     s.add_argument("--location")
+    s.add_argument("--enforce-hours", action="store_true",
+                   help="refuse a booking outside working hours (default: book it and print a warning)")
     s.set_defaults(func=cmd_book)
 
     s = sub.add_parser("agenda", help="appointments, tasks due and open slots for a day")

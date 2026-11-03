@@ -94,6 +94,25 @@ def test_full_session(workdir, fixture_csv, capsys):
     assert "BROKEN at entry 3" in capsys.readouterr().out
 
 
+def test_book_warns_outside_working_hours_and_enforce_hours_refuses(workdir, capsys):
+    assert main(["init", "--timezone", "America/New_York", "--hours", "mon-fri 09:00-17:00"]) == 0
+    capsys.readouterr()
+    assert main(["book", "2030-11-04 10:00", "--title", "Kickoff"]) == 0  # a Monday, inside hours
+    assert "warning" not in capsys.readouterr().err
+    assert main(["book", "2030-11-04 19:00", "--title", "Evening call"]) == 0
+    out, err = capsys.readouterr()
+    assert "Booked #2: Evening call, 2030-11-04 19:00 to 19:30" in out
+    assert "warning: #2 is outside working hours (mon-fri 09:00-17:00)" in err
+    assert main(["book", "2030-11-05 19:00", "--title", "Refused", "--enforce-hours"]) == 1
+    out, err = capsys.readouterr()
+    assert "Booked" not in out and "outside working hours (mon-fri 09:00-17:00)" in err
+    assert main(["book", "2030-11-05 09:00", "--title", "Morning", "--enforce-hours"]) == 0
+    out, err = capsys.readouterr()
+    assert "Booked #3: Morning" in out and err == ""
+    assert main(["agenda", "--date", "2030-11-05"]) == 0
+    assert "Refused" not in capsys.readouterr().out
+
+
 def test_keygen_prints_usable_secrets(workdir, capsys):
     assert main(["keygen", "--postgres"]) == 0
     lines = dict(l.split("=", 1) for l in capsys.readouterr().out.splitlines() if "=" in l and not l.startswith("#"))

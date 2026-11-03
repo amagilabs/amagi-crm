@@ -639,7 +639,14 @@ class CRM:
             raise Invalid("end must be after start")
         return start, end
 
-    def create_appointment(self, data: dict, actor: str, source: str = "staff") -> Appointment:
+    def outside_working_hours(self, start_utc: datetime, end_utc: datetime) -> bool:
+        """True if the span doesn't fit inside one working-hours window on a single day."""
+        return not scheduling.within_working_hours(start_utc, end_utc, self.zone, self.hours)
+
+    def create_appointment(self, data: dict, actor: str, source: str = "staff",
+                           enforce_hours: bool = False) -> Appointment:
+        """Book an appointment. Overlaps are always refused. Working hours are only
+        checked when ``enforce_hours`` is set; otherwise staff can book any time."""
         try:
             start, end = self._times(data)
         except scheduling.ScheduleError as exc:
@@ -647,6 +654,8 @@ class CRM:
         title = _clean_str(data.get("title"))
         if not title:
             raise Invalid("appointment title is required")
+        if enforce_hours and self.outside_working_hours(start, end):
+            raise Invalid(f"that time is outside working hours ({self.settings.working_hours})")
         with self.session() as s, audit.write_txn(s):
             clash = self._busy(s, start, end)
             if clash:

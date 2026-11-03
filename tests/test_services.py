@@ -193,6 +193,20 @@ def test_appointment_validation_and_moves(crm):
     assert moved.end_utc - moved.start_utc == timedelta(minutes=60)  # keeps its length
 
 
+def test_working_hours_warn_by_default_and_block_only_when_enforced(crm):
+    day = next_monday(crm)  # mon-fri 09:00-17:00, America/New_York
+    evening = crm.create_appointment({"title": "Late call", "start": _at(day, "19:00")}, "t")
+    assert crm.outside_working_hours(evening.start_utc, evening.end_utc)
+    inside = crm.create_appointment({"title": "Kickoff", "start": _at(day, "16:30")}, "t", enforce_hours=True)
+    assert not crm.outside_working_hours(inside.start_utc, inside.end_utc)
+    with pytest.raises(Invalid, match="outside working hours"):
+        crm.create_appointment({"title": "Runs past five", "start": _at(day, "16:45")}, "t", enforce_hours=True)
+    with pytest.raises(Invalid, match="outside working hours"):
+        crm.create_appointment({"title": "Sunday", "start": _at(day - timedelta(days=1), "10:00")}, "t",
+                               enforce_hours=True)
+    assert [x.title for x in crm.appointments_on(day)] == ["Kickoff", "Late call"]
+
+
 def test_availability_excludes_booked_time(crm):
     day = next_monday(crm)
     assert len(crm.availability(day, now_utc=LONG_AGO)) == 16
