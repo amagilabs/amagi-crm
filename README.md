@@ -169,6 +169,21 @@ Tasks due:
 Open slots: 09:00, 09:30, 10:30, 11:00, 11:30, 12:00, 12:30, 13:00, 13:30, 14:00, 14:30, 15:00, 15:30, 16:00, 16:30
 ```
 
+Working hours decide which open slots you see. They don't stop you from booking other times by
+hand: `book` still saves an evening or weekend appointment, then prints a warning. Add
+`--enforce-hours` to refuse it instead (exit code 1, nothing saved). Staff bookings made in the
+web UI or through the REST API are not checked against working hours. The public booking page
+only accepts open slots, so visitors can't book outside them.
+
+```
+$ amagi-crm book "2030-11-04 19:00" --title "Evening call"
+Booked #2: Evening call, 2030-11-04 19:00 to 19:30
+amagi-crm: warning: #2 is outside working hours (mon-fri 09:00-17:00). Booked anyway; pass --enforce-hours to refuse such bookings.
+
+$ amagi-crm book "2030-11-05 19:00" --title "Evening call" --enforce-hours
+amagi-crm: that time is outside working hours (mon-fri 09:00-17:00)
+```
+
 ### Users and calendar feeds
 
 Roles are `admin`, `member` (read and write) and `readonly`. Each user
